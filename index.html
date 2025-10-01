@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pembayaran DANA, GoPay & QRIS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .header {
+            background: linear-gradient(to right, #2575fc, #6a11cb);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 25px;
+        }
+        
+        .payment-option {
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            border: 1px solid #e9ecef;
+        }
+        
+        .payment-option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .payment-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .payment-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            font-weight: bold;
+            color: white;
+            font-size: 18px;
+        }
+        
+        .dana-icon {
+            background: linear-gradient(to right, #1080e5, #0a6dc2);
+        }
+        
+        .gopay-icon {
+            background: linear-gradient(to right, #00aa13, #008a0f);
+        }
+        
+        .qris-icon {
+            background: linear-gradient(to right, #ff6b00, #e55a00);
+        }
+        
+        .payment-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #343a40;
+        }
+        
+        .payment-details {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .payment-number {
+            font-size: 18px;
+            font-weight: 600;
+            color: #495057;
+            padding: 12px;
+            background-color: white;
+            border-radius: 8px;
+            text-align: center;
+            letter-spacing: 1px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .copy-btn {
+            background: linear-gradient(to right, #2575fc, #6a11cb);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .copy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(37, 117, 252, 0.3);
+        }
+        
+        .qris-image {
+            width: 100%;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .qris-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .instructions {
+            background-color: #e7f3ff;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 25px;
+            border-left: 4px solid #2575fc;
+        }
+        
+        .instructions h3 {
+            color: #2575fc;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .instructions ol {
+            padding-left: 20px;
+            color: #495057;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+            font-size: 14px;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #28a745;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translateX(150%);
+            transition: transform 0.4s ease;
+            z-index: 1000;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                border-radius: 15px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .payment-number {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Pembayaran Digital</h1>
+            <p>Pilih metode pembayaran yang Anda inginkan</p>
+        </div>
+        
+        <div class="content">
+            <div class="payment-option">
+                <div class="payment-header">
+                    <div class="payment-icon dana-icon">D</div>
+                    <div class="payment-title">DANA</div>
+                </div>
+                <div class="payment-details">
+                    <div class="payment-number" id="dana-number">081999232736</div>
+                    <button class="copy-btn" onclick="copyToClipboard('dana-number')">Salin Nomor</button>
+                </div>
+            </div>
+            
+            <div class="payment-option">
+                <div class="payment-header">
+                    <div class="payment-icon gopay-icon">G</div>
+                    <div class="payment-title">GoPay</div>
+                </div>
+                <div class="payment-details">
+                    <div class="payment-number" id="gopay-number">081999232736</div>
+                    <button class="copy-btn" onclick="copyToClipboard('gopay-number')">Salin Nomor</button>
+                </div>
+            </div>
+            
+            <div class="payment-option">
+                <div class="payment-header">
+                    <div class="payment-icon qris-icon">Q</div>
+                    <div class="payment-title">QRIS</div>
+                </div>
+                <div class="payment-details">
+                    <div class="qris-image">
+                        <img src="https://files.catbox.moe/h5q56j.jpg" alt="QR Code QRIS">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="instructions">
+                <h3>Cara Pembayaran:</h3>
+                <ol>
+                    <li>Pilih salah satu metode pembayaran di atas</li>
+                    <li>Untuk DANA/GoPay: Salin nomor dan transfer sesuai nominal</li>
+                    <li>Untuk QRIS: Scan kode QR menggunakan aplikasi e-wallet atau mobile banking</li>
+                    <li>Pastikan nominal pembayaran sudah sesuai</li>
+                    <li>Simpan bukti pembayaran Anda</li>
+                </ol>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Terima kasih atas pembayaran Anda</p>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification">
+        Nomor berhasil disalin!
+    </div>
+
+    <script>
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.innerText;
+            
+            // Create a temporary textarea element
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            
+            // Select and copy the text
+            textarea.select();
+            document.execCommand('copy');
+            
+            // Remove the temporary element
+            document.body.removeChild(textarea);
+            
+            // Show notification
+            const notification = document.getElementById('notification');
+            notification.classList.add('show');
+            
+            // Hide notification after 3 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
